@@ -103,7 +103,7 @@ const uint8_t Buzzer = D5;
 ```
 No initialization need to be done, so we just added the code inside 'void loop()'. To help to visualizate the results, two *for* loops are added, that will slowly increase/decrease the bright of the LED.
 
-**Note: the last parameter of *analogWrite* receiver the parameter *val* with type  *int*. On Arduino IDE *int* is only 8 bits long.**
+**Note: the last parameter of *analogWrite* is the parameter *val* with type of *int*. On Arduino IDE *int* is only 8 bits long, so it goes from 0 to 255.**
 
 ```c
   for (int i = 0; i <=255; i++){
@@ -118,3 +118,45 @@ No initialization need to be done, so we just added the code inside 'void loop()
     delay(10);
   } 
 ```
+
+Results:
+
+![WhatsApp Video 2023-02-20 at 17 36 31](https://user-images.githubusercontent.com/58916022/220247013-ae20e139-34d1-440c-9ee6-f183556fa1f7.gif)
+
+## Code (Analog Input)
+
+To visualizate the analog input easily, we will configure the UART. The NodeMCU board has two different IC that controls the UART serial over the USB channel. The IC can be the CH340 from WCH manufactor or CP2102 from Silabs (it may have other options since NodeMCU is an open hardware plataform). Also, different driver may be installed because of that.
+
+To configure the serial, inside 'void setup()' we will call the class function *Serial.begin*. For more information, it is located inside the 'HardwareSerial.cpp'. We can pass diferent parameters according with the configuration we need. In this case, we will just pass the baud rate parameter.
+
+![image](https://user-images.githubusercontent.com/58916022/220250552-3b296135-fb54-485f-affb-a0e71cb44342.png)
+
+```c
+  Serial.begin(9600);
+```
+
+As analog device, we will configure a macro with the peripheral name that we will be using.
+
+```c
+#define LDR A0
+```
+
+Then, in 'void loop()' we add the serial function to print the value of LDR (A0 macro) plus some delay that is alread in code. The *println* function can be found on 'Print.cpp'file and will pass throught the 'Serial' class. The value to print is the return of the *analogRead* function. The *analogRead* function is written inside the 'core_esp8266_wiring_analog.cpp' file.
+
+```c
+Serial.println(analogRead(LDR));
+```
+
+To see the results, go to 'Tools' -> 'Serial Monitor':
+
+![image](https://user-images.githubusercontent.com/58916022/220252414-7d87bd6e-97c5-4005-8996-5576125faef9.png)
+
+Or 'Tools' -> 'Serial Plotter':
+
+![image](https://user-images.githubusercontent.com/58916022/220252858-95eee27f-5ca3-4224-b5ac-728beee01bb9.png)
+
+* A -> Ambient dark room.
+* B -> Flash light of smartphone.
+* C -> Screen light of notebook.
+
+
